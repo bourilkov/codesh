@@ -1,4 +1,6 @@
 codesh
 ======
 
-COllaborative DEvelopment SHell   Conception: Dimitri Bourilkov
+COllaborative DEvelopment SHell
+
+Conception: Dimitri Bourilkov
