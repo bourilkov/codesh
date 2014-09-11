@@ -1,0 +1,11 @@
+echo "Test 17: bash with cvs repository"
+pwd
+ls remote*.*
+uname -a
+ls -al remote*.*
+> dbecho.csh
+> dbtest.py
+> stringcount.py sample.README codesh
+
+log test-17
+browse test-17 s

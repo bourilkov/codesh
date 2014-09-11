@@ -1,0 +1,61 @@
+#***************************************************
+#* Copyright (C) 2006, University of Florida       *
+#* Authors: D.Bourilkov,                           *
+#*          V.Khandelwal, S.Totala, S.Sonapeer     *
+#* All rights reserved.                            *
+#*                                                 *
+#* Licensing: GNU General Public License (GPL) v2  *
+#***************************************************
+
+  Examples of sessions using the command line and running scripts.
+
+  The input text file for the stringcount.py script (README.txt) is
+  recorded in the repository as well for full reproducibility
+  everywhere. In the first example this is done by hand by the
+  user. In the second example the user defines a tracked list
+  in the configuration file and this is done automatically. To run
+  the second example just replace example1.conf amd example1.txt with
+  example2.conf and example2.txt in the lines below.
+
+  In example1.conf replace <my_repository> with the location of your CODESH
+  repository (local or remote), replace <cvs OR ascii OR svn> with
+  your chosen Repositorytype (CVS or ASCII /flat files/ or Subversion
+  backend) and then run:
+
+     1) In batch
+
+          codesh.py -b -c example1.conf < example1.txt
+
+     2) Or interactively
+
+          codesh.py -c example1.conf
+
+        by typing the commands from example1.txt on the command prompt.
+
+  As a result you will have a log of your first virtual session,
+  including commands, executed scripts and input files.
+
+  Now go to a new and completely clean directory and reproduce your
+  session:
+
+     1) Start codesh; specify the location of your CODESH repository when
+        prompted or put it in codesh.conf to save typing it each time:
+
+          codesh.py   OR
+          codesh.py -c <config_file>
+
+     2) Once codesh is running:
+
+          browse            browse existing tags
+          extract <tag>     reproduce your virtual session
+
+  Tag has the form e.g. user-20061004-2239-test-001. The part test-001
+  was supplied by the user, the first four letters are the UserID (can
+  be changed), and the universal time (in the form YYYYMMDD-HHMM) when
+  the session was logged is appended automatically by the system. For the
+  second examle the tag has the form e.g. user-20080429-1200-test-002.
+
+  Note that the scripts and input files appear "out of thin air" and
+  you or collaborators can always reproduce the session, (hopefully)
+  getting the same results, even if files were modified or deleted in
+  the meantime.

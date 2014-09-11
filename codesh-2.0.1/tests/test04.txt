@@ -1,0 +1,5 @@
+. test04.sh
+alias CC
+alias DD
+getalias CC
+getalias DD

@@ -1,0 +1,7 @@
+echo "Test 23: Take snapshots with bash and cvs repository"
+mkdir -p testsnapshots
+cp -p *.* testsnapshots
+cd testsnapshots
+takesnapshot test-23 bash/cvs_repository
+up
+rm -rf testsnapshots
