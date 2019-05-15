@@ -1,0 +1,2 @@
+. test02.sh
+echo $NEW_ENV

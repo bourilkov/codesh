@@ -1,0 +1,7 @@
+echo "Test 21: Take snapshots with bash and ascii repository"
+mkdir -p testsnapshots
+cp -p *.* testsnapshots
+cd testsnapshots
+takesnapshot test-21 bash/ascii_repository
+up
+rm -rf testsnapshots

@@ -1,0 +1,8 @@
+echo "Test 22: Get snapshots with bash and ascii repository"
+mkdir -p testsnapshots
+cd testsnapshots
+getsnapshot test-21
+cat us*/test21.txt
+up
+rm -rf testsnapshots
+
