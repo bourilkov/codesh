@@ -1,0 +1,31 @@
+rm -f testoutput.txt
+codesh.py -c codesh.tcsh.conf -b < test01.txt >> testoutput.txt
+codesh.py -c codesh.bash.conf -b < test02.txt >> testoutput.txt
+codesh.py -c codesh.tcsh.alias.conf -b < test03.txt >> testoutput.txt
+codesh.py -c codesh.bash.alias.conf -b < test04.txt >> testoutput.txt
+codesh.py -c codesh.tcsh.conf -b < test05.txt >> testoutput.txt
+codesh.py -c codesh.bash.conf -b < test06.txt >> testoutput.txt
+
+./repoCheck.py cvsascii remote
+codesh.py -c codesh.bash.asciiRepochk.conf -b < test11.txt >> testoutput.txt
+codesh.py -c codesh.bash.ascii.conf -b < test12.txt >> testoutput.txt
+codesh.py -c codesh.tcsh.ascii.conf -b < test13.txt >> testoutput.txt
+rm -f sample.README
+codesh.py -c codesh.bash.ascii.conf -b < test14.txt >> testoutput.txt
+rm -f sample.README
+codesh.py -c codesh.tcsh.ascii.conf -b < test14.txt >> testoutput.txt
+codesh.py -c codesh.bash.cvsRepochk.conf -b < test16.txt >> testoutput.txt
+codesh.py -c codesh.bash.cvs.conf -b < test17.txt >> testoutput.txt
+codesh.py -c codesh.tcsh.cvs.conf -b < test18.txt >> testoutput.txt
+rm -f sample.README
+codesh.py -c codesh.bash.cvs.conf -b < test19.txt >> testoutput.txt
+rm -f sample.README
+codesh.py -c codesh.tcsh.cvs.conf -b < test19.txt >> testoutput.txt
+
+codesh.py -c codesh.bash.ascii.conf -b < test21.txt >> testoutput.txt
+codesh.py -c codesh.bash.ascii.conf -b < test22.txt >> testoutput.txt
+codesh.py -c codesh.bash.cvs.conf -b < test23.txt >> testoutput.txt
+codesh.py -c codesh.bash.cvs.conf -b < test24.txt >> testoutput.txt
+
+./scanOutput.py
+./cleanTest.py

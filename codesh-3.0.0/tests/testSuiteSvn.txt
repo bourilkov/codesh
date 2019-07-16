@@ -1,0 +1,15 @@
+rm -f testoutputsvn.txt
+
+./repoCheck.py svn
+codesh.py -c codesh.bash.svn.conf -b < test17svn.txt >> testoutputsvn.txt
+codesh.py -c codesh.tcsh.svn.conf -b < test18svn.txt >> testoutputsvn.txt
+rm -f sample.README
+codesh.py -c codesh.bash.svn.conf -b < test19.txt >> testoutputsvn.txt
+rm -f sample.README
+codesh.py -c codesh.tcsh.svn.conf -b < test19.txt >> testoutputsvn.txt
+
+codesh.py -c codesh.bash.svn.conf -b < test23svn.txt >> testoutputsvn.txt
+codesh.py -c codesh.bash.svn.conf -b < test24svn.txt >> testoutputsvn.txt
+
+./scanOutputSvn.py
+./cleanTest.py

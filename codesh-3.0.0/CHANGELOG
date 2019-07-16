@@ -1,0 +1,181 @@
+
+                                          20-Nov-2006
+
+Initial version codesh-0.6.2
+
+Changes in codesh-0.6.3
+
+   Improved:
+     - handling of shell commands in the background (for bash)
+     - cd command
+     - checks if a valid (existing) configuration file is given
+
+Changes in codesh-0.6.4                   05-Dec-2006
+
+   The interactive response to user commands has been improved:
+try e.g. top or emacs &.
+
+Changes in codesh-0.7.0                   23-May-2007
+
+   CODESH core hardened.
+   Robust and flexible handling of different classes of shell
+commands.
+   Alias handling improved, especially in bash.
+   stderr output included in the log files.
+   Repository commands protected if the user has not initialized
+the repository location.
+   Tested on different platforms with tcsh and bash.
+   Requires python2.
+
+Changes in codesh-0.8.0                   11-Jun-2007
+
+   Introducing a new persistent backend for virtual sessions,
+based just on flat (mostly ASCII) files, and corresponding
+new module codeshbascii.py. Now the user has a clear choice
+between: a CVS backend; a flat file (ASCII) backend, thus
+avoiding the CVS dependency; or no backend at all.
+   The protection of repository commands has been improved. Now
+they are executed only after a check that the repository specified
+by the user is alive and operational. The verification of
+user-supplied command line parameters has been improved.
+
+Changes in codesh-0.8.1                   04-Oct-2007
+
+   Introducing a new and expandable test suite for automatic testing of
+the basic functionality of CODESH. Passing all tests is a precondition for
+making new releases public. The tests serve a dual purpose as examples of
+using CODESH in different modes of operation.
+   The protection of CODESH commands when using tags with the ASCII 
+backend has been improved. Non-existent tags are detected automatically
+and feedback is provided to the user.
+
+Changes in codesh-0.8.2                   06-Oct-2007
+
+   The case when bash is the underlying shell and there are no pre-defined
+user aliases is handled properly, thus avoiding warning messages.
+   The test suite is made more robust by eliminating a dependency on
+the user setting of the PATH environment variable for tests 05 and 06.
+
+Changes in codesh-0.9.0                   15-Oct-2007
+
+   This version introduces access to remote repositories for the ASCII
+persistent backend for virtual sessions, based on ssh and scp. Access
+to remote hosts can be controlled e.g. by the use of public and private
+keys. The standard create-codeshasciirepository.sh script can be used
+to create repositories on remote hosts.
+   The test suite is expanded to check the functionality of the
+takesnapshot and getsnapshot commands.
+
+Changes in codesh-1.0.0                   14-Dec-2007
+
+   This version introduces a new persistent backend for virtual sessions,
+based on Subversion, and corresponding new module codeshbsvn.py. Now the user
+has an expanded choice between: a Subversion backend; a CVS backend; a flat
+file (ASCII) backend, thus avoiding Subversion or CVS dependencies; or no
+backend at all. The standard create-codeshsvnrepository.sh script can be used
+to create repositories on local or remote hosts. Access to remote svnserve
+repositories can be svn user based (no user shell accounts on server) or over
+SSH.
+
+Changes in codesh-1.0.1                   17-Dec-2007
+
+   This version introduces a new testsuite for automatic testing of the new
+persistent backend for virtual sessions, based on Subversion - testSuiteSvn.txt
+located in the tests subdirectory. The users can run tests for an expanded
+choice of options: a Subversion backend; a CVS backend; a flat file (ASCII)
+backend, thus avoiding Subversion or CVS dependencies; or no backend at all.
+The tests serve a dual purpose as examples of using CODESH in different modes
+of operation.
+
+Changes in codesh-1.1.0                   29-Apr-2008
+
+   This version introduces the option to automatically track and store in the
+persistent backends files with extensions from a tracked list defined by the
+users. Up to now users had the option to automatically track and store
+executed (typically source code) files like shell/python/perl scripts, placed
+as the first word on the command line, or sourced files (e.g. ". myfile.sh"
+in bash or "source myfile.csh" in tcsh), and to store other files needed to
+reproduce a virtual session by explicitly using the record command. Now this
+can be done automatically for all files with extensions from the user defined
+tracked list, located anywhere on the command line. A typical example is a
+shell script taking files as input parameters and depending on their
+existence to execute successfully.
+
+Changes in codesh-1.2.0                   02-May-2008
+
+   This release introduces the novel concept of a flex session. The convenient
+log-and-replay mechanism of CODESH is expanded to log-modify-and-replay. Now
+individuals and groups can not only log, share and reproduce their sessions at
+will, they can browse and inspect sessions from private or shared repositories,
+alter them on the fly from the command line or files containing the changes,
+and "replay" many similar sessions starting from a previously recorded session.
+The modified sessions can in turn be recorded for further use and reuse.
+
+Changes in codesh-1.2.1                   23-May-2008
+
+   This version improves the user interface for handling tags. Now users can
+supply on the command line not only full tag names, but shorter substrings
+as long as they are unique. In case of ambiguities, a list of matching tags
+to chose from is returned. The taking of snapshots is improved: the user is
+asked before taking a snapshot if it exceeds 2048 kB, and the possibility
+to enter an infinite loop if the repository is located below the snapshot
+directory is avoided.
+
+Changes in codesh-1.2.2                   18-June-2008
+
+   This version takes full advantage of the improved user interface for
+handling tags. The test suite is simplified substantially and made more
+elegant by using the new feature of supplying on the command line not only
+full tag names, but shorter substrings as long as they are unique.
+
+Changes in codesh-1.3.0                   21-June-2008
+
+   This version improves the user experience by hardening both the frontend
+and the Subversion, CVS and ASCII backends. The checks on the user input
+are extended and now the users are warned basically in all situations if
+they try to run commands with wrong number of parameters. The verifications if
+the backend repositories are up and running when the users try to access
+them are extended with dynamic checks, approaching complete coverage.
+
+Changes in codesh-1.4.0                   30-June-2008
+
+   The focus of this version are the distributed computing (remote) aspects
+of CODESH. A new subdirectory "remote" is introduced. It contains sample 
+scripts showing how to set up remote (client/server based) Subversion, CVS
+and ASCII backends, along with detailed documentation. The scripts can be used
+not only to set up CODESH backends, but general purpose remote Subversion or
+CVS pserver repositories as well. As customary, extreme caution and studying
+the documentation in advance is recommended before setting up servers.
+
+Changes in codesh-1.4.1                   10-July-2008
+
+   The test suite is streamlined to produce shorter and more focused output,
+making it easier to scan the results from each test. The code for the various
+backends is cleaned up and a problem when extracting flex sessions (the
+log-modify-and-replay mechanism of CODESH) from remote CVS backends is fixed.
+
+Changes in codesh-2.0.0                   11-March-2010
+
+   Starting point for a new development cycle. The web server hosting codesh
+is migrated to new hardware.
+
+Changes in codesh-2.0.1                   24-July-2013
+
+   Deprecated code like os.popen and string exceptions brought to Python 2.6
+standards. Corresponding warnings disappear.
+
+Changes in codesh-2.0.2                   12-April-2019
+
+   Improved the test suite for svn (specifically test19.txt) to reduce
+warnings.
+
+Changes in codesh-2.0.3                   12-July-2019
+
+   Improved the svn backend (codeshbsvn.py) to eliminate warnings (no
+bugs, but why inconvenience the users).
+
+Changes in codesh-3.0.0                   10-July-2019
+
+   This version uses Python 3. All Python code transitioned 2->3.
+
+

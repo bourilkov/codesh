@@ -1,0 +1,8 @@
+echo "Test 23: Take snapshots with bash and svn repository"
+mkdir -p testsnapshots
+cp -p *.* testsnapshots
+cd testsnapshots
+takesnapshot test-23 bash/svn_repository
+up
+rm -rf testsnapshots
+browse snap

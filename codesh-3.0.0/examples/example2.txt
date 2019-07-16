@@ -1,0 +1,7 @@
+pwd
+ls *.*
+uname -a
+./dbecho.csh
+./dbtest.py
+./stringcount.py README.txt a
+log test-002

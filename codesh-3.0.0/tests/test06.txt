@@ -1,0 +1,2 @@
+eval `./test06.sh`
+echo $NEW_ENV

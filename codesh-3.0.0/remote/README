@@ -1,0 +1,39 @@
+#***************************************************
+#* Copyright (C) 2008, University of Florida       *
+#* Authors: D.Bourilkov, S.Sonapeer                *
+#* All rights reserved.                            *
+#*                                                 *
+#* Licensing: GNU General Public License (GPL) v2  *
+#***************************************************
+
+
+For Subversion and CVS servers we provide sample install scripts.
+The scripts in the "remote" directory may require running as root.
+Two scripts are available:
+
+   servsvn.py
+   servcvs.py
+
+Extreme caution is necessary. Always make a new directory and
+only run them there. Never run them in a place where you keep
+your files.
+
+If you install CVS pserver, first make a backup of:
+
+   /etc/services    file
+   /etc/xinetd.d    directory
+
+The ASCII server requires UNIX accounts on the remote server. If you
+do not particularly like the idea of managing UNIX accounts, consider
+using Subversion or CVS servers.
+
+On the other hand, if you have an existing server where your users
+already have accounts and can ssh/scp, or you will be the sole remote
+user of the repository, the ASCII server is very easy to set up.
+
+The documentation for different servers is in the files:
+
+   Doc_ASCII_Server.txt
+   Doc_CVS_Pserver.txt
+   Doc_Subversion_Server.txt
+

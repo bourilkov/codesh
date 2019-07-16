@@ -1,0 +1,11 @@
+echo "Test 18: tcsh with svn repository"
+pwd
+ls -al remote*.*
+uname -a
+ls remoterepo.file
+> dbecho.csh
+> dbtest.py
+> stringcount.py sample.README codesh
+
+log test-18
+browse test-18 s

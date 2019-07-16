@@ -1,0 +1,68 @@
+#***************************************************
+#* Copyright (C) 2007, University of Florida       *
+#* Authors: D.Bourilkov, S.Sonapeer                *
+#* All rights reserved.                            *
+#*                                                 *
+#* Licensing: GNU General Public License (GPL) v2  *
+#***************************************************
+
+    The tests subdirectory contains a test suite for automatic
+testing of the basic functionality of codesh. Passing all tests
+is a precondition for making new releases public. The tests
+serve a dual purpose as examples of using codesh.
+
+    Initialize codesh as customary and go to the tests subdir (we
+recommend to run the tests ONLY in this place).
+
+    Two ways to run the tests:
+
+      1) At the shell prompt
+
+        ./testSuite.txt
+
+      2) Using codesh (in this mode a master codesh process is used
+         recursively in batch mode to invoke codesh many times for the
+         different tests)
+
+        codesh.py -c codesh.bash.conf -b < testSuite.txt
+
+        OR
+
+        codesh.py -c codesh.tcsh.conf -b < testSuite.txt
+
+    Each test will report its status at the end of the run.
+
+    List of tests:
+
+    Basic tests of the frontend (user interface)
+
+     Shell functionality
+
+      01:  Environment variables with tcsh
+      02:  Environment variables with bash
+      03:  Aliases with tcsh
+      04:  Aliases with bash
+      05:  Use of eval with tcsh
+      06:  Use of eval with bash
+
+    Basic tests of the backend (virtual logbooks)
+
+     Illustrates basic codesh commands to log/reuse sessions
+
+      11:  Ascii repository: if you forget to set it
+      12:  Ascii repository with bash: log and browse
+      13:  Ascii repository with tcsh: log and browse
+      14:  Ascii repository with bash: extract bash/tcsh sessions
+      15:  Ascii repository with tcsh: extract bash/tcsh sessions
+      16:  Cvs repository: if you forget to set it
+      17:  Cvs repository with bash: log and browse
+      18:  Cvs repository with tcsh: log and browse
+      19:  Cvs repository with bash: extract bash/tcsh sessions
+      20:  Cvs repository with tcsh: extract bash/tcsh sessions
+
+     Illustrates basic codesh commands to log/reuse subdirectories
+
+      21:  Ascii repository with bash: take snapshot of subdirectory
+      22:  Ascii repository with bash: get snapshot of subdirectory
+      23:  Cvs repository with bash: take snapshot of subdirectory
+      24:  Cvs repository with bash: get snapshot of subdirectory

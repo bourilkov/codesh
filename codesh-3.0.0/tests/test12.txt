@@ -1,0 +1,11 @@
+echo "Test 12: bash with ascii repository"
+pwd
+ls remote*.*
+uname -a
+ls -al remote*.*
+> dbecho.csh
+> dbtest.py
+> stringcount.py sample.README codesh
+
+log test-12
+browse test-12 s

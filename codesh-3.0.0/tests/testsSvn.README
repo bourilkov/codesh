@@ -1,0 +1,51 @@
+#***************************************************
+#* Copyright (C) 2007, University of Florida       *
+#* Authors: D.Bourilkov, S.Sonapeer                *
+#* All rights reserved.                            *
+#*                                                 *
+#* Licensing: GNU General Public License (GPL) v2  *
+#***************************************************
+
+    The tests subdirectory contains a test suite for automatic
+testing of the basic functionality of codesh with a Subversion
+backend. Passing all tests is a precondition for making new
+releases public. The tests serve a dual purpose as examples of
+using codesh.
+
+    Initialize codesh as customary and go to the tests subdir (we
+recommend to run the tests ONLY in this place).
+
+    Two ways to run the tests:
+
+      1) At the shell prompt
+
+        ./testSuiteSvn.txt
+
+      2) Using codesh (in this mode a master codesh process is used
+         recursively in batch mode to invoke codesh many times for the
+         different tests)
+
+        codesh.py -c codesh.bash.conf -b < testSuiteSvn.txt
+
+        OR
+
+        codesh.py -c codesh.tcsh.conf -b < testSuiteSvn.txt
+
+    Each test will report its status at the end of the run.
+
+    List of tests:
+
+    Basic tests of the backend (virtual logbooks)
+
+     Illustrates basic codesh commands to log/reuse sessions
+
+      16:  Subversion repository: if you forget to set it
+      17:  Subversion repository with bash: log and browse
+      18:  Subversion repository with tcsh: log and browse
+      19:  Subversion repository with bash: extract bash/tcsh sessions
+      20:  Subversion repository with tcsh: extract bash/tcsh sessions
+
+     Illustrates basic codesh commands to log/reuse subdirectories
+
+      23:  Subversion repository with bash: take snapshot of subdirectory
+      24:  Subversion repository with bash: get snapshot of subdirectory

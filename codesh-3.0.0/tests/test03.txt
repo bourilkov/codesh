@@ -1,0 +1,5 @@
+source test03.csh
+alias CC
+alias DD
+getalias CC
+getalias DD

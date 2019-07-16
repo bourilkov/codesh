@@ -1,0 +1,18 @@
+#***************************************************
+#* Copyright (C) 2006, University of Florida       *
+#* Authors: D.Bourilkov,                           *
+#*          V.Khandelwal, S.Totala, S.Sonapeer     *
+#* All rights reserved.                            *
+#*                                                 *
+#* Licensing: GNU General Public License (GPL) v2  *
+#***************************************************
+
+  Examples of sessions using the command line and running scripts.
+
+  The input text file for the stringcount.py script (README.txt) is
+  recorded in the repository as well for full reproducibility
+  everywhere. In the second example the user defines a tracked list
+  in the configuration file and this is done automatically. To run
+  the second example use example2.conf and example2.txt.
+
+  Otherwise follow the instructions from example1.README .
