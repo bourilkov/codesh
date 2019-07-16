@@ -1,0 +1,30 @@
+#***************************************************
+#* Copyright (C) 2008, University of Florida       *
+#* Authors: D.Bourilkov, S.Sonapeer                *
+#* All rights reserved.                            *
+#*                                                 *
+#* Licensing: GNU General Public License (GPL) v2  *
+#***************************************************
+
+
+The set up of an ASCII server is very simple.
+
+1> Create an ASCII repository on the server using the standard script
+
+create-codeshasciirepository.sh
+
+2> Give UNIX accounts to all remote users and install their public SSH keys.
+
+3> Make all users members of a common group and change the file permissions
+   on the repository to read/write for this group.
+
+If you do not particularly like the idea of managing UNIX accounts, consider
+using Subversion or CVS servers.
+
+On the other hand, if you have an existing server where your users
+already have accounts and can ssh/scp, or you will be the sole remote
+user of the repository, the ASCII server is very easy to set up.
+Actually, there is no process running on the host, ssh or scp are
+invoked on demand when the users initiate interactions with the
+repository.
+

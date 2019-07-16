@@ -1,0 +1,25 @@
+#***************************************************
+#* Copyright (C) 2006, University of Florida       *
+#* Authors: D.Bourilkov,                           *
+#*          V.Khandelwal, S.Totala, S.Sonapeer     *
+#* All rights reserved.                            *
+#*                                                 *
+#* Licensing: GNU General Public License (GPL) v2  *
+#***************************************************
+#******************************************
+#*                                        *
+#*             C O D E S H                *
+#*                                        *
+#*    COllaborative DEvelopment SHell     *
+#*                                        *
+#*     Conception: Dimitri Bourilkov      *
+#*                                        *
+#*         Lead developers:               *
+#*          Dimitri Bourilkov             *
+#*          Vaibhav Khandelwal            *
+#*          Sanket  Totala                *
+#*          Sharad  Sonapeer              *
+#*                                        *
+#*  http://cern.ch/bourilkov/caves.html   *
+#*                                        *
+#******************************************

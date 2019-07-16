@@ -1,0 +1,2 @@
+eval `./test05.csh`
+echo $NEW_ENV

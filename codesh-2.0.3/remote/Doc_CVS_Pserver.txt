@@ -1,0 +1,414 @@
+#***************************************************
+#* Copyright (C) 2008, University of Florida       *
+#* Authors: D.Bourilkov, S.Sonapeer                *
+#* All rights reserved.                            *
+#*                                                 *
+#* Licensing: GNU General Public License (GPL) v2  *
+#***************************************************
+
+
+PREREQUISITES TO INSTALL CVS SERVER:
+0. You can run as root
+1. CVS is installed
+2. You have the rights to stop/start xinetd
+
+
+It is necessary to login as ROOT to execute the following steps.
+
+############CVS PSERVER INSTALLATION.#########################################
+
+
+This goes in two major steps plus testing:
+I]  Steps to create or change the CVS Port.
+II] Steps to build the CVS repository and change the permissions.
+III]Testing the CVS pserver
+
+
+To proceed with the first 2 steps first create a UNIX nologin user say 'cvsuser'.
+Also a new group needs to be created, e.g. 'cvs'. WE STRONGLY RECOMMEND TO USE
+NON-STANDARD (NOT THE ONES IN OUR EXAMPLE) NAMES FOR THE USER, GROUP AND
+REPOSITORY LOCATION, AND TO GRANT ACCESS ONLY TO USERS WITH PASSWORDS (SEE
+BELOW), NO ANONYMOUS PASSWORDLESS ACCESS IN ORDER TO ENHANCE THE SECURITY.
+
+This means the CVS server - pserver will run under this UNIX user account
+to access the repositories that we will create. So the cvsuser needs the
+right UNIX permissions to access and modify the repository. Do not confuse
+the UNIX user with the CVS users created below - they are used by the remote
+clients to access the server and the remote users do NOT need UNIX accounts on
+the server. 
+
+
+I] TO CREATE OR CHANGE CVS PORT
+
+a> Modify /etc/services file
+
+Usually /etc/services already contains these lines; if not then these are to be
+added in the same file:
+
+cvspserver	2401/tcp			# CVS client/server operations
+cvspserver	2401/udp			# CVS client/server operations
+
+Make sure they are there. They define the port for the CVS server - by default
+port 2401.
+
+If we want to change the CVS port then these lines are to be modified for the
+port number. But we need to check first in the same services file if the new
+port is used by some other service.
+
+b> Modify /etc/xinetd.d/cvs_pserver_file
+
+If pserver is already installed there is a file in /etc/xinetd.d in which
+service cvspserver is defined. The name of the file can be anything like cvs or
+cvspserver, etc. If such a file is found then only the port parameter in this
+file is to be changed to modify the port.
+
+If pserver is newly installed then we have to create such file. The content of
+the file would be e.q.
+
+service cvspserver
+{
+        disable            = no
+        socket_type        = stream
+        wait               = no
+        user               = cvsuser
+        group              = cvs
+        log_type           = FILE /var/log/cvspserver
+        protocol           = tcp
+        env                = '$HOME=/home/cvsuser'
+        log_on_failure     += USERID
+        port               = 2401
+        server             = /usr/bin/cvs
+        server_args        = -f -l --allow-root=/home/cvsuser pserver
+}
+
+Note several lines to tweak for your local situation:
+    user        --> cvsuser as defined above in the beginning
+    group       --> "ditto"
+    env
+    port        --> port number where we want our cvs pserver to listen to
+    server      --> where your cvs is installed; can be in /usr/local/.../
+    server_args --> allow-root gives the location of the cvs repository that we
+                    will create in step II]; for multiple repositories each
+                    should have a separate allow-root entry (just repeat the
+                    option)
+
+Important: Please change the owner and the group of this file to cvsuser/cvs.
+
+c> To restart xinetd
+
+[root@hostname xinetd.d]# /etc/init.d/xinetd restart
+Stopping xinetd:                                           [  OK  ]
+Starting xinetd:                                           [  OK  ]
+[root@hostname xinetd.d]# /etc/init.d/xinetd status 
+xinetd (pid 17465) is running...
+
+Testing :  To check whether pserver is running.
+
+This can be done by executing the 'netstat -anp | head -20' command.
+If you can find the port number, say 2401 or whichever you have mentioned
+earlier in /etc/services and /etc/xinetd.d/cvspserver file along with IP
+address, then things are OK.
+
+This means the pserver is started and ready to accept the requests.
+The only thing that remains now is the creation of the repository for which the
+requests will come.
+
+
+II] TO BUILD CVS REPOSITORY & CHANGE PERMISSIONS
+
+a> To create the CVS repository at the given path.
+
+Create a directory to hold the first repository (many repositories can be
+created - as mentioned above the option allow-root in server_args is to be
+repeated). 
+
+e.g. /home/cvsuser
+
+Init your repository (this is using the local cvs without server so we need to
+be root to have write access; we can also use the server to create new
+repositories).
+
+cvs -d /home/cvsuser init
+
+Executing this command will create a directory called CVSROOT below 
+/home/cvsuser.
+The same should be done for each new repository, giving the desired CVS
+repository location in -d ...
+
+b> To tighten the security 
+
+Check the file CVSROOT/config: e.g.
+
+[root@hostname CVSROOT]# cat config
+# Set this to "no" if pserver shouldn't check system users/passwords
+#SystemAuth=no
+
+# Put CVS lock files in this directory rather than directly in the repository.
+#LockDir=/var/lock/cvs
+
+# Set `TopLevelAdmin' to `yes' to create a CVS directory at the top
+# level of the new working directory when using the `cvs checkout'
+# command.
+#TopLevelAdmin=no
+
+# Set `LogHistory' to `all' or `TOFEWGCMAR' to log all transactions to the
+# history file, or a subset as needed (i.e. `TMAR' logs all write operations)
+#LogHistory=TOFEWGCMAR
+
+
+The SystemAuth parameter is very important - because the client stores
+and transmits passwords almost in clear-text, it is better to use a
+separate CVS passwd file as mentioned below. Thus clients do not use
+their UNIX usernames/passwords to login. We define a separate userbase
+for CVS as mentioned below.
+
+Just uncomment the SystemAuth and LogHistory parameter to tighten the security.
+
+Now it is time to create the passwd and writers files in the CVSROOT directory.
+The passwd file defines the CVS user names and passwords and makes the 
+connection to the local UNIX account used by the pserver to operate on the host:
+in our example this is the cvsuser account (set up as a nologin user as its sole
+purpose is to be used by the pserver). The fields in the passwd file are
+separated by ":" e.g.:
+
+anonymous:vngjucneruicvjnxdurdd:cvsuser
+user1:$1$drgstDDW$7gCqxzH8k9jxb:cvsuser
+user2:Fsdsr4GlGfgrnxcRbzfnbcgsn:cvsuser
+
+The second parameter is the 1CVS password encrypted using e.g. UNIX crypt() and
+pasted in this passwd file by hand. We can also use python's crypt function to
+generate this password. We can use any two characters as a salt to generate this
+hex password e.g. in python:
+
+import crypt
+crypt.crypt("abc123","s2")
+
+where abc123 is the password and s2 is salt. This will generate some hex
+password. Blank password means anything can be typed as password.
+
+The cvsuser at the end of the line has the effect that users will run on the
+server under the user account cvsuser, they do not even need an account on the
+remote system! Looks familiar? C.f. with e.g. gridmapfiles.
+
+And create a file writers e.g.
+
+[root@hostname CVSROOT]# cat writers
+user1
+user2
+
+listing ALL users that will have write access to the repository.
+As a side effect anonymous will have read-only access.
+
+c> File Permissions
+
+We recommend to set the file permissions exactly as shown below.
+Look which directory we are in, which files are there and how the
+permissions are set for different files.
+
+[root@hostname cvsroot]# pwd
+/home/cvsuser
+[root@hostname cvsroot]# ls -al
+total 28
+drwxr-x---    3 cvsuser  cvs          4096 Aug 28 17:46 .
+drwxr-xr-x    6 root     cvs             0 Aug 12 15:48 ..
+-rwxr-xr-x    1 cvsuser  cvs             5 Aug 28 15:50 .bash_history
+-rwxr-xr-x    1 cvsuser  cvs            24 Aug 28 15:47 .bash_logout
+-rwxr-xr-x    1 cvsuser  cvs           191 Aug 28 15:47 .bash_profile
+-rwxr-xr-x    1 cvsuser  cvs           124 Aug 28 15:47 .bashrc
+drwxr-x---    3 cvsuser  cvs          4096 Aug 28 20:24 CVSROOT
+-rwxr-xr-x    1 cvsuser  cvs           854 Aug 28 15:47 .emacs
+[root@hostname cvsroot]# cd CVSROOT/
+[root@hostname CVSROOT]# ls -al
+total 160
+drwxr-x---    3 cvsuser  cvs          4096 Aug 28 20:24 .
+drwxr-x---    3 cvsuser  cvs          4096 Aug 28 17:46 ..
+-r--r--r--    1 cvsuser  cvs           493 Aug 28 18:17 checkoutlist
+-r--r--r--    1 cvsuser  cvs           493 Aug 28 17:46 .#checkoutlist
+-r--r--r--    1 cvsuser  cvs           698 Aug 28 17:46 checkoutlist,v
+-r--r--r--    1 cvsuser  cvs           760 Aug 28 18:17 commitinfo
+-r--r--r--    1 cvsuser  cvs           760 Aug 28 17:46 .#commitinfo
+-r--r--r--    1 cvsuser  cvs           965 Aug 28 17:46 commitinfo,v
+-r--r--r--    1 cvsuser  cvs           527 Aug 28 18:17 config
+-r--r--r--    1 cvsuser  cvs           527 Aug 28 17:46 .#config
+-r--r--r--    1 cvsuser  cvs           732 Aug 28 17:46 config,v
+-r--r--r--    1 cvsuser  cvs           753 Aug 28 18:17 cvswrappers
+-r--r--r--    1 cvsuser  cvs           753 Aug 28 17:46 .#cvswrappers
+-r--r--r--    1 cvsuser  cvs           958 Aug 28 17:46 cvswrappers,v
+-r--r--r--    1 cvsuser  cvs          1025 Aug 28 18:17 editinfo
+-r--r--r--    1 cvsuser  cvs          1025 Aug 28 17:46 .#editinfo
+-r--r--r--    1 cvsuser  cvs          1230 Aug 28 17:46 editinfo,v
+drwxrwxr-x    2 cvsuser  cvs          4096 Aug 28 17:46 Emptydir
+-rw-rw-rw-    1 cvsuser  cvs           273 Aug 28 18:32 history
+-r--r--r--    1 cvsuser  cvs          1141 Aug 28 18:17 loginfo
+-r--r--r--    1 cvsuser  cvs          1141 Aug 28 17:46 .#loginfo
+-r--r--r--    1 cvsuser  cvs          1346 Aug 28 17:46 loginfo,v
+-r--r--r--    1 cvsuser  cvs          1248 Aug 28 18:17 modules
+-r--r--r--    1 cvsuser  cvs          1151 Aug 28 17:46 .#modules
+-r--r--r--    1 cvsuser  cvs          1568 Aug 28 18:17 modules,v
+-r--r--r--    1 cvsuser  cvs           564 Aug 28 18:17 notify
+-r--r--r--    1 cvsuser  cvs           564 Aug 28 17:46 .#notify
+-r--r--r--    1 cvsuser  cvs           769 Aug 28 17:46 notify,v
+-rwS------    1 cvsuser  cvs           122 Aug 28 20:09 passwd
+-r--r--r--    1 cvsuser  cvs           649 Aug 28 18:17 rcsinfo
+-r--r--r--    1 cvsuser  cvs           649 Aug 28 17:46 .#rcsinfo
+-r--r--r--    1 cvsuser  cvs           854 Aug 28 17:46 rcsinfo,v
+-r--r--r--    1 cvsuser  cvs           879 Aug 28 18:17 taginfo
+-r--r--r--    1 cvsuser  cvs           879 Aug 28 17:46 .#taginfo
+-r--r--r--    1 cvsuser  cvs          1084 Aug 28 17:46 taginfo,v
+-rw-rw-rw-    1 cvsuser  cvs             0 Aug 28 17:46 val-tags
+-r--r--r--    1 cvsuser  cvs          1026 Aug 28 18:17 verifymsg
+-r--r--r--    1 cvsuser  cvs          1026 Aug 28 17:46 .#verifymsg
+-r--r--r--    1 cvsuser  cvs          1231 Aug 28 17:46 verifymsg,v
+-rwS------    1 cvsuser  cvs            17 Aug 28 20:24 writers
+
+Note the permissions on passwd and writers! These files are added by hand after
+the CVSROOT directory was created with the "cvs -d /home/cvsuser init" command. 
+They are set using e.g. first using 
+
+chmod 700 passwd 
+
+and then 
+
+chmod u+s passwd 
+
+The same result can be obtained if we enable login for the cvsuser and create
+the repository as cvsuser instead of root; in any case be sure to tighten the
+permissions on two files:
+     passwd    writers   
+
+III] Testing the CVS pserver
+
+   As a client on different machine:
+  ==================================
+
+1) Check the connection:
+
+db@pc: cvs -d :pserver:user1@hostname:/home/cvsuser login
+Logging in to :pserver:user1@hostname:2401/home/cvsuser
+CVS password: 
+
+db@pc: cat .cvspass
+:pserver:anonymous@hostname:2401/home/cvsuser ........
+/1 :pserver:user1@hostname:2401/home/cvsuser .........
+
+db@pc: cvs -d :pserver:user1@hostname:/home/cvsuser co CVSROOT
+cvs server: Updating CVSROOT
+U CVSROOT/checkoutlist
+U CVSROOT/commitinfo
+U CVSROOT/config
+U CVSROOT/cvswrappers
+U CVSROOT/editinfo
+U CVSROOT/loginfo
+U CVSROOT/modules
+U CVSROOT/notify
+U CVSROOT/rcsinfo
+U CVSROOT/taginfo
+U CVSROOT/verifymsg
+
+db@pc: lt
+total 16
+drwxr-xr-x    3 user1    user1        4096 Aug 28 14:13 CVSROOT
+
+db@pc: cd CVSROOT/
+db@pc: ls -al
+total 48
+-rw-r--r--    1 user1    user1         493 Aug 28 13:46 checkoutlist
+-rw-r--r--    1 user1    user1         760 Aug 28 13:46 commitinfo
+-rw-r--r--    1 user1    user1         527 Aug 28 13:46 config
+drwxr-xr-x    2 user1    user1        4096 Aug 28 14:13 CVS
+-rw-r--r--    1 user1    user1         753 Aug 28 13:46 cvswrappers
+-rw-r--r--    1 user1    user1        1025 Aug 28 13:46 editinfo
+-rw-r--r--    1 user1    user1        1141 Aug 28 13:46 loginfo
+-rw-r--r--    1 user1    user1        1151 Aug 28 13:46 modules
+-rw-r--r--    1 user1    user1         564 Aug 28 13:46 notify
+-rw-r--r--    1 user1    user1         649 Aug 28 13:46 rcsinfo
+-rw-r--r--    1 user1    user1         879 Aug 28 13:46 taginfo
+-rw-r--r--    1 user1    user1        1026 Aug 28 13:46 verifymsg
+
+db@pc: cat modules
+# Three different line formats are valid:
+#	key	-a    aliases...
+#	key [options] directory
+#	key [options] directory files...
+#
+# Where "options" are composed of:
+#	-i prog		Run "prog" on "cvs commit" from top-level of module.
+#	-o prog		Run "prog" on "cvs checkout" of module.
+#	-e prog		Run "prog" on "cvs export" of module.
+#	-t prog		Run "prog" on "cvs rtag" of module.
+#	-u prog		Run "prog" on "cvs update" of module.
+#	-d dir		Place module in directory "dir" instead of module name.
+#	-l		Top-level directory only -- do not recurse.
+#
+# NOTE:  If you change any of the "Run" options above, you'll have to
+# release and re-checkout any working directories of these modules.
+#
+# And "directory" is a path to a directory relative to $CVSROOT.
+#
+# The "-a" option specifies an alias.  An alias is interpreted as if
+# everything on the right of the "-a" had been typed on the command line.
+#
+# You can encode a module within a module by using the special '&'
+# character to interpose another module into the current module.  This
+# can be useful for creating a module that consists of many directories
+# spread out over the entire source repository.
+modules       CVSROOT modules
+#
+#  add my stuff here
+#
+v01           cave/v01
+data          data
+
+
+WORKS!
+
+
+   As a client on the SAME machine:
+  ==================================
+
+1) Check the connection:
+
+[user1@localhost ~]$ cvs -d :pserver:user1@localhost:/home/cvsuser login
+Logging in to :pserver:user1@localhost:2401/home/cvsuser
+CVS password: 
+
+[user1@localhost ~]$ cat .cvspass
+:pserver:anonymous@localhost:2401/home/cvsuser .........
+/1 :pserver:user1@localhost:2401/home/cvsuser .........
+
+[user1@localhost ~]$ cvs -d :pserver:user1@localhost:/home/cvsuser co CVSROOT
+cvs server: Updating CVSROOT
+U CVSROOT/checkoutlist
+U CVSROOT/commitinfo
+U CVSROOT/config
+U CVSROOT/cvswrappers
+U CVSROOT/editinfo
+U CVSROOT/loginfo
+U CVSROOT/modules
+U CVSROOT/notify
+U CVSROOT/rcsinfo
+U CVSROOT/taginfo
+U CVSROOT/verifymsg
+
+[user1@localhost ~]$ ls -al CVSROOT/
+total 56
+drwxrwxr-x    3 user1    user1        4096 Aug 29 14:10 .
+drwxr-xr-x   28 user1    user1        4096 Aug 29 14:10 ..
+-rw-rw-r--    1 user1    user1         493 Aug 28 17:46 checkoutlist
+-rw-rw-r--    1 user1    user1         760 Aug 28 17:46 commitinfo
+-rw-rw-r--    1 user1    user1         527 Aug 28 17:46 config
+drwxrwxr-x    2 user1    user1        4096 Aug 29 14:10 CVS
+-rw-rw-r--    1 user1    user1         753 Aug 28 17:46 cvswrappers
+-rw-rw-r--    1 user1    user1        1025 Aug 28 17:46 editinfo
+-rw-rw-r--    1 user1    user1        1141 Aug 28 17:46 loginfo
+-rw-rw-r--    1 user1    user1        1248 Aug 28 18:17 modules
+-rw-rw-r--    1 user1    user1         564 Aug 28 17:46 notify
+-rw-rw-r--    1 user1    user1         649 Aug 28 17:46 rcsinfo
+-rw-rw-r--    1 user1    user1         879 Aug 28 17:46 taginfo
+-rw-rw-r--    1 user1    user1        1026 Aug 28 17:46 verifymsg
+
+Note that passwd and writers are NOT checked out as we inserted them in the
+repository by hand!
+
+WORKS!
+

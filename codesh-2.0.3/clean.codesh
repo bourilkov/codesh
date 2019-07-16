@@ -1,0 +1,14 @@
+rm -f temp.txt
+rm -f mylog.1
+rm -f myfulllog.1
+rm -f ????-????????-????-*.log
+rm -rf tlogs
+rm -f store-alias-output.*sh*
+rm -f store-env-output.*sh*
+rm -f alias-initial.*sh*
+rm -f env-initial.*sh*
+rm -f alias-final.*sh*
+rm -f env-final.*sh*
+rm -f codesh*.pyc
+rm -f vstate*.pyc
+rm -f extract*.pyc

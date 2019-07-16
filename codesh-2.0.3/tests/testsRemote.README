@@ -1,0 +1,41 @@
+#***************************************************
+#* Copyright (C) 2008, University of Florida       *
+#* Authors: D.Bourilkov, S.Sonapeer                *
+#* All rights reserved.                            *
+#*                                                 *
+#* Licensing: GNU General Public License (GPL) v2  *
+#***************************************************
+
+    The tests subdirectory contains a test suite for automatic
+testing of the basic functionality of codesh with the different
+backends. Passing all tests is a precondition for making new
+releases public. The tests serve a dual purpose as examples of
+using codesh.
+
+    Initialize codesh as customary and go to the tests subdir (we
+recommend to run the tests ONLY in this place).
+
+    To run the remote tests:
+
+      1) Create a file
+
+          remoterepo.file
+
+         containing the locations of the remote ASCII, CVS and SVN
+         repositories, e.g.
+
+user@hostname:/codesh/RepositoryASCII
+:pserver:user@hostname:2401/codesh/RepositoryCVS
+svn://user@hostname:3690/
+
+         and login to each of them in advance to avoid login prompts
+         during the tests.
+
+      2) At the shell prompt
+ 
+        ./remotetestSuite.txt
+        ./remotetestSuiteSvn.txt
+
+    If you repeat the tests, use newly created fresh repositories as we
+do not provide clean-up yet.
+

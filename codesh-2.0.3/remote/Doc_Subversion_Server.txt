@@ -1,0 +1,152 @@
+#***************************************************
+#* Copyright (C) 2008, University of Florida       *
+#* Authors: D.Bourilkov, S.Sonapeer                *
+#* All rights reserved.                            *
+#*                                                 *
+#* Licensing: GNU General Public License (GPL) v2  *
+#***************************************************
+
+
+The set up of a subversion server needs two steps.
+
+1> Install subversion server (and client) on a machine.
+2> Set up subversion server (and configure the permissions for some files).
+
+You can use a similar installation on client machines to install
+Subversion clients.
+
+I> Install subversion server (and client).
+
+This proceeds in 5 steps. Just make sure to get a compatible set of tarballs for
+one of the latest versions and make the necessary changes in the instructions.
+
+E.g. tarballs needed for one of the latest versions.
+
+apr-1.2.12.tar.gz
+apr-util-1.2.12.tar.gz
+neon-0.28.1.tar.gz
+subversion-1.4.6.tar.gz
+
+Steps:
+
+1> Installing from apr-1.2.12.tar.gz
+
+tar xzvf apr-1.2.12.tar.gz
+cd apr-1.2.12
+./configure --enable-shared --prefix=/usr/local
+make
+make install
+
+2> Installing from apr-util-1.2.12.tar.gz
+
+tar xzvf apr-util-1.2.12.tar.gz
+cd apr-util-1.2.12
+./configure --enable-shared --prefix=/usr/local \
+--with-expat=builtin --with-apr=/usr/local --without-berlekey-db
+make
+make install
+
+3> Installing from neon-0.28.1.tar.gz
+
+tar xzvf neon-0.28.1.tar.gz
+cd neon-0.28.1
+./configure --enable-shared --prefix=/usr/local \
+--with-libs=/usr/local --with-ssl
+make
+make install
+
+4> Installing from subversion-1.4.6.tar.gz
+
+tar xzvf subversion-1.4.6.tar.gz
+cd subversion-1.4.6
+./configure --prefix=/usr/local --without-berlekey-db  \
+--with-editor=/usr/bin/vim --with-apr=/usr/local       \
+--with-apr-util=/usr/local --with-neon=/usr/local      \
+--without-apxs --without-apache
+make
+make install
+
+5> Checking the subversion installation
+
+svn --version
+
+###It should show something like###
+
+  svn, version 1.4.6 (r28521)
+     compiled Jan 29 2008, 11:05:47
+
+
+
+II] Set up subversion server 
+
+This proceeds in the following 6 steps. As an example, the location of the
+repository is
+
+/svnrepos
+
+WE STRONGLY RECOMMEND TO USE NON-STANDARD AND HARD TO GUESS LOCATIONS FOR
+ENHANCED SECURITY.
+
+Steps:
+
+1> Create a Repository, e.g.
+
+svnadmin create /svnrepos
+
+2> Create a SVN User (used to access the repository; not a UNIX user)
+
+vi /svnrepos/conf/svnserve.conf
+
+In that file add these three lines:
+
+anon-access = none
+auth-access = write
+password-db = passwd
+
+3> Create a password file:
+
+vi /svnrepos/conf/passwd
+
+In that file add lines for your users:
+
+# add users in the format : user = password
+tony = mypassword
+
+4> Import Your Project
+
+(assuming you have put your project files in /projects/myrailsproject)
+
+svn import /projects/myrailsproject file:///svnrepos/myrailsproject
+
+5> Start the SVN Server as Daemon
+
+svnserve -d
+
+This will listen to the default subversion port i.e. 3690.
+
+To change the port number, just add the "--listen-port = port_number" parameter
+to the command above.
+
+If we start the demon as above, it makes EVERY repository in your filesystem
+available, usually not what you want. To enhance security use the -r option,
+which redefines the root of the remote filesystem, so access is granted ONLY
+to repositories below this path, e.g.
+
+svnserve -d --listen-port=3691 -r /svnrepos
+
+and you can use shorter URLs omitting the root (see below).
+
+You should now have a svn server running with one project named myrailsproject.
+
+6> Check it out of the repository:
+
+svn co svn://user@hostname:3691/myrailsproject
+
+OR if you did
+svnserve -d --listen-port=3691 -r /svnrepos/myrailsproject
+you can use
+svn co svn://user@hostname:3691/
+
+Since we set anon-access to none you should be prompted for the password of
+the user which you created in the file /svnrepos/conf/passwd.
+

@@ -1,0 +1,11 @@
+echo "Test 13: tcsh with ascii repository"
+pwd
+ls -al remote*.*
+uname -a
+ls remoterepo.file
+> dbecho.csh
+> dbtest.py
+> stringcount.py sample.README codesh
+
+log test-13
+browse test-13 s
